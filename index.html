@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flare Cloud | میزبانی سرور و هاستینگ ابری</title>
+    
+    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --primary: #ff3e3e; /* قرمز فلیر */
+            --primary-glow: rgba(255, 62, 62, 0.4);
+            --bg-dark: #0a0a0c; /* پس زمینه خیلی تیره */
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass-blur: 12px;
+            --text-main: #ffffff;
+            --text-sec: #b0b0b0;
+            --success: #00ff88;
+            --warning: #ffaa00;
+            --danger: #ff3e3e;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            outline: none;
+            font-family: 'Vazirmatn', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        a { text-decoration: none; color: inherit; transition: 0.3s; }
+        ul { list-style: none; }
+
+        /* --- استایل‌های Glassmorphism --- */
+        .glass {
+            background: var(--glass-bg);
+            backdrop-filter: blur(var(--glass-blur));
+            -webkit-backdrop-filter: blur(var(--glass-blur));
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        .glass:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 8px 32px 0 rgba(255, 62, 62, 0.1);
+        }
+
+        /* --- پس‌زمینه انیمیشنی --- */
+        #particles-js {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: -1;
+            background-image: radial-gradient(circle at 50% 50%, #1a0505 0%, #0a0a0c 100%);
+        }
+        
+        .bg-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: url('https://images.unsplash.com/photo-1558494949-ef526b0042a0?q=80&w=2668&auto=format&fit=crop') center/cover no-repeat;
+            opacity: 0.05;
+            z-index: -2;
+            pointer-events: none;
+        }
+
+        /* --- هدر و نوبار --- */
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            padding: 20px 0;
+            transition: 0.3s;
+        }
+        
+        header.scrolled {
+            background: rgba(10, 10, 12, 0.8);
+            backdrop-filter: blur(15px);
+            padding: 10px 0;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 0 25px;
+        }
+
+        .nav-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo i { color: var(--primary); font-size: 2rem; }
+        .logo span { color: var(--primary); }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            color: var(--text-sec);
+            font-weight: 500;
+            position: relative;
+        }
+
+        .nav-links a:hover { color: var(--text-main); }
+        .nav-links a::after {
+            content: ''; position: absolute; bottom: -5px; right: 0;
+            width: 0; height: 2px; background: var(--primary);
+            transition: 0.3s;
+        }
+        .nav-links a:hover::after { width: 100%; }
+
+        .auth-btns .btn {
+            padding: 10px 25px;
+            border-radius: 12px;
+            font-weight: 700;
+            margin-left: 10px;
+            cursor: pointer;
+            transition: 0.3s;
+            border: none;
+        }
+
+        .btn-login { background: transparent; color: var(--text-main); border: 1px solid var(--glass-border); }
+        .btn-login:hover { border-color: var(--primary); color: var(--primary); }
+
+        .btn-register { 
+            background: linear-gradient(135deg, var(--primary), #a80000); 
+            color: white; 
+            box-shadow: 0 4px 15px var(--primary-glow);
+        }
+        .btn-register:hover { transform: translateY(-2px); box-shadow: 0 8px 25px var(--primary-glow); }
+
+        /* --- Hero Section --- */
+        .hero {
+            height: 90vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+            padding-top: 80px;
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            font-weight: 900;
+            margin-bottom: 20px;
+            line-height: 1.2;
+            background: linear-gradient(to right, #fff, #b0b0b0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 1.4rem;
+            color: var(--text-sec);
+            margin-bottom: 40px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-btns { display: flex; gap: 20px; justify-content: center; }
+        .btn-hero { padding: 15px 40px; font-size: 1.1rem; border-radius: 50px; }
+
+        /* --- Services & Products --- */
+        .section-title {
+            text-align: center;
+            margin: 100px 0 50px;
+        }
+        .section-title h2 { font-size: 2.5rem; margin-bottom: 15px; }
+        .section-title span { color: var(--primary); }
+        .section-title p { color: var(--text-sec); }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .service-card {
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            transition: 0.4s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .service-card::before {
+            content: ''; position: absolute; top: 0; right: 0; width: 4px; height: 100%;
+            background: var(--primary); opacity: 0; transition: 0.3s;
+        }
+        .service-card:hover::before { opacity: 1; }
+        .service-card:hover { transform: translateY(-10px); }
+
+        .card-icon {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 10px;
+            text-shadow: 0 0 20px var(--primary-glow);
+        }
+
+        .card-price {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #fff;
+            margin-top: auto;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        .card-price span { font-size: 0.9rem; color: #777; font-weight: 400; }
+
+        .flag { font-size: 1.2rem; margin-right: 5px; }
+        .cpu-tag { 
+            background: rgba(255, 62, 62, 0.1); color: var(--primary); 
+            padding: 4px 10px; border-radius: 4px; font-size: 0.8rem; font-weight: bold;
+        }
+
+        /* --- Monitoring Section (Complex) --- */
+        .monitoring-wrapper {
+            max-height: 600px;
+            overflow-y: auto;
+            border-radius: 16px;
+        }
+
+        /* اسکرول بار سفارشی */
+        .monitoring-wrapper::-webkit-scrollbar { width: 8px; }
+        .monitoring-wrapper::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); }
+        .monitoring-wrapper::-webkit-scrollbar-thumb { background: var(--glass-border); border-radius: 4px; }
+        .monitoring-wrapper::-webkit-scrollbar-thumb:hover { background: var(--primary); }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            color: var(--text-sec);
+        }
+
+        th {
+            text-align: right;
+            padding: 20px;
+            background: rgba(0,0,0,0.3);
+            color: var(--text-main);
+            position: sticky;
+            top: 0;
+            backdrop-filter: blur(10px);
+            z-index: 10;
+        }
+
+        td {
+            padding: 15px 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            font-size: 0.95rem;
+        }
+
+        tr:hover td {
+            background: rgba(255, 255, 255, 0.02);
+            color: #fff;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            min-width: 80px;
+            text-align: center;
+        }
+        .status-online { background: rgba(0, 255, 136, 0.1); color: var(--success); border: 1px solid rgba(0, 255, 136, 0.2); }
+        .status-offline { background: rgba(255, 62, 62, 0.1); color: var(--danger); border: 1px solid rgba(255, 62, 62, 0.2); }
+        .status-maintenance { background: rgba(255, 170, 0, 0.1); color: var(--warning); border: 1px solid rgba(255, 170, 0, 0.2); }
+
+        /* --- Footer --- */
+        footer {
+            margin-top: 100px;
+            padding: 50px 0 20px;
+            background: rgba(0,0,0,0.5);
+            border-top: 1px solid var(--glass-border);
+            text-align: center;
+        }
+        
+        .footer-socials a {
+            margin: 0 10px;
+            font-size: 1.5rem;
+            color: var(--text-sec);
+        }
+        .footer-socials a:hover { color: var(--primary); }
+
+        /* موبایل */
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .hero h1 { font-size: 2.5rem; }
+            .monitoring-wrapper { overflow-x: auto; }
+            table { min-width: 600px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-overlay"></div>
+    <canvas id="particles-js"></canvas>
+
+    <header id="main-header">
+        <div class="container nav-content">
+            <div class="logo">
+                <i class="fa-solid fa-cloud-bolt"></i>
+                Flare<span>Cloud</span>
+            </div>
+            
+            <nav class="nav-links">
+                <a href="#">صفحه اصلی</a>
+                <a href="#services">سرورهای بازی</a>
+                <a href="#vps">سرور مجازی (VPS)</a>
+                <a href="#monitoring">مانیتورینگ</a>
+                <a href="#">پشتیبانی</a>
+            </nav>
+
+            <div class="auth-btns">
+                <button class="btn btn-login">ورود</button>
+                <button class="btn btn-register">ثبت نام</button>
+            </div>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <h1>بهترینا رو توی<br><span style="color: var(--primary);">Flare Cloud</span> تجربه کن</h1>
+            <p>ارائه دهنده قدرتمندترین سرورهای گیمینگ، VPS و هاست ابری با پینگ پایین و آنتی‌دیداس سخت‌افزاری در دیتاسنترهای OVH.</p>
+            <div class="hero-btns">
+                <button class="btn btn-register btn-hero">شروع کنید</button>
+                <button class="btn btn-login btn-hero">مشاهده پلن‌ها</button>
+            </div>
+        </div>
+    </section>
+
+    <div class="container">
+        <div class="services-grid" style="margin-top: -50px; position: relative; z-index: 10;">
+            <div class="glass service-card">
+                <i class="fa-solid fa-shield-halved card-icon"></i>
+                <h3>امنیت DDoS</h3>
+                <p style="color: #aaa;">محافظت لایه 7 سخت‌افزاری مخصوص گیم سرورها برای جلوگیری از اتک.</p>
+            </div>
+            <div class="glass service-card">
+                <i class="fa-solid fa-microchip card-icon"></i>
+                <h3>سخت‌افزار مدرن</h3>
+                <p style="color: #aaa;">استفاده از پردازنده‌های Ryzen 9 و Intel Xeon با رم‌های DDR4/DDR5.</p>
+            </div>
+            <div class="glass service-card">
+                <i class="fa-solid fa-headset card-icon"></i>
+                <h3>پشتیبانی ۲۴/۷</h3>
+                <p style="color: #aaa;">تیم فنی ما همیشه بیدار است تا مشکلات سرور شما را در لحظه حل کند.</p>
+            </div>
+        </div>
+    </div>
+
+    <section id="services">
+        <div class="container">
+            <div class="section-title">
+                <h2>سرورهای <span>گیمینگ</span></h2>
+                <p>کانفیگ‌های اختصاصی برای ماینکرافت، فایو ام و راست</p>
+            </div>
+
+            <div class="services-grid">
+                <div class="glass service-card">
+                    <div style="display:flex; justify-content:space-between;">
+                        <i class="fa-solid fa-cube card-icon" style="color:#2ecc71;"></i>
+                        <span class="cpu-tag">Ryzen 9 5950X</span>
+                    </div>
+                    <h3>Minecraft Hosting</h3>
+                    <ul style="color: var(--text-sec); margin-top: 10px;">
+                        <li><i class="fa-solid fa-check" style="color:var(--primary); margin-left:5px;"></i> رم نامحدود (انتخابی)</li>
+                        <li><i class="fa-solid fa-check" style="color:var(--primary); margin-left:5px;"></i> کنترل پنل اختصاصی</li>
+                        <li><i class="fa-solid fa-check" style="color:var(--primary); margin-left:5px;"></i> لوکیشن: 🇩🇪 🇫🇮</li>
+                    </ul>
+                    <div class="card-price">
+                        شروع از ۹۹,۰۰۰ <span>تومان/ماه</span>
+                        <button class="btn btn-register" style="width:100%; margin-top:15px;">خرید آنی</button>
+                    </div>
+                </div>
+
+                <div class="glass service-card">
+                    <div style="display:flex; justify-content:space-between;">
+                        <i class="fa-solid fa-car card-icon" style="color:#f39c12;"></i>
+                        <span class="cpu-tag">Intel Xeon Gold</span>
+                    </div>
+                    <h3>FiveM Server</h3>
+                    <ul style="color: var(--text-sec); margin-top: 10px;">
+                        <li><i class="fa-solid fa-check" style="color:var(--primary); margin-left:5px;"></i> آنتی‌چیت داخلی</li>
+                        <li><i class="fa-solid fa-check" style="color:var(--primary); margin-left:5px;"></i> دیتابیس رایگان</li>
+                        <li><i class="fa-solid fa-check" style="color:var(--primary); margin-left:5px;"></i> لوکیشن: 🇫🇷 🇩🇪</li>
+                    </ul>
+                    <div class="card-price">
+                        شروع از ۱۹۰,۰۰۰ <span>تومان/ماه</span>
+                        <button class="btn btn-register" style="width:100%; margin-top:15px;">خرید آنی</button>
+                    </div>
+                </div>
+
+                <div class="glass service-card" id="vps">
+                    <div style="display:flex; justify-content:space-between;">
+                        <i class="fa-solid fa-server card-icon" style="color:#3498db;"></i>
+                        <span class="cpu-tag">NVMe SSD</span>
+                    </div>
+                    <h3>NVMe VPS</h3>
+                    <ul style="color: var(--text-sec); margin-top: 10px;">
+                        <li><i class="fa-solid fa-check" style="color:var(--primary); margin-left:5px;"></i> مخصوص ترید و بورس</li>
+                        <li><i class="fa-solid fa-check" style="color:var(--primary); margin-left:5px;"></i> سیستم عامل ویندوز/لینوکس</li>
+                        <li><i class="fa-solid fa-check" style="color:var(--primary); margin-left:5px;"></i> آی‌پی ثابت اختصاصی</li>
+                    </ul>
+                    <div class="card-price">
+                        شروع از ۱۵۰,۰۰۰ <span>تومان/ماه</span>
+                        <button class="btn btn-register" style="width:100%; margin-top:15px;">خرید آنی</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="monitoring">
+        <div class="container">
+            <div class="section-title">
+                <h2>وضعیت <span>سرورها</span></h2>
+                <p>مانیتورینگ لحظه‌ای وضعیت نودها و سرورهای بازی</p>
+            </div>
+
+            <div class="glass monitoring-wrapper">
+                <table id="server-table">
+                    <thead>
+                        <tr>
+                            <th>نام سرور</th>
+                            <th>سرویس</th>
+                            <th>لوکیشن</th>
+                            <th>مشخصات (CPU/RAM)</th>
+                            <th>وضعیت</th>
+                            <th>آنلاین</th>
+                            <th>پینگ</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body">
+                        </tbody>
+                </table>
+            </div>
+            <div style="text-align: center; margin-top: 15px; color: #777; font-size: 0.8rem;">
+                <i class="fa-solid fa-rotate fa-spin"></i> آپدیت خودکار هر ۵ ثانیه
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="logo" style="justify-content: center; margin-bottom: 20px;">
+                Flare<span>Cloud</span>
+            </div>
+            <div class="footer-socials">
+                <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                <a href="#"><i class="fa-brands fa-telegram"></i></a>
+                <a href="#"><i class="fa-brands fa-discord"></i></a>
+            </div>
+            <p style="color: #555; margin-top: 20px;">تمامی حقوق برای تیم Flare Cloud محفوظ است &copy; ۱۴۰۳</p>
+        </div>
+    </footer>
+
+    <script>
+        // --- 1. هدر چسبان ---
+        window.addEventListener('scroll', function() {
+            const header = document.getElementById('main-header');
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        // --- 2. سیستم مانیتورینگ فیک (Simulated Monitoring) ---
+        const serverTypes = ['Minecraft', 'FiveM', 'Rust', 'TeamSpeak', 'VPS Node'];
+        const locations = [
+            { flag: '🇫🇷', name: 'France' },
+            { flag: '🇩🇪', name: 'Germany' },
+            { flag: '🇫🇮', name: 'Finland' }
+        ];
+        const cpus = ['Ryzen 9 5950X', 'Intel Xeon E-2288G', 'Ryzen 7 5800X', 'Intel i9-9900K'];
+
+        const tableBody = document.getElementById('table-body');
+        const serverCount = 35; // تعداد سرورها
+        let serversData = [];
+
+        // ساخت دیتای اولیه
+        function initServers() {
+            for (let i = 1; i <= serverCount; i++) {
+                const type = serverTypes[Math.floor(Math.random() * serverTypes.length)];
+                const loc = locations[Math.floor(Math.random() * locations.length)];
+                const cpu = cpus[Math.floor(Math.random() * cpus.length)];
+                const ram = [32, 64, 128][Math.floor(Math.random() * 3)];
+                
+                serversData.push({
+                    id: `IR-SV${Math.ceil(i/10)}-${i}`,
+                    type: type,
+                    loc: loc,
+                    cpu: cpu,
+                    ram: ram,
+                    status: 'online', // online, offline, maintenance
+                    players: Math.floor(Math.random() * 200),
+                    ping: Math.floor(Math.random() * 60) + 20
+                });
+            }
+            renderTable();
+        }
+
+        // رندر کردن جدول
+        function renderTable() {
+            tableBody.innerHTML = '';
+            serversData.forEach(server => {
+                let statusClass = 'status-online';
+                let statusText = 'آنلاین';
+                
+                if (server.status === 'offline') {
+                    statusClass = 'status-offline';
+                    statusText = 'آفلاین';
+                } else if (server.status === 'maintenance') {
+                    statusClass = 'status-maintenance';
+                    statusText = 'تعمیرات';
+                }
+
+                const row = `
+                    <tr>
+                        <td style="font-weight:bold; color:white;">${server.id}</td>
+                        <td>${server.type}</td>
+                        <td>${server.loc.flag} ${server.loc.name}</td>
+                        <td><span style="color:#aaa; font-size:0.8rem;">${server.cpu}</span> <br> ${server.ram}GB RAM</td>
+                        <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                        <td>${server.status === 'online' ? server.players + ' / 500' : '-'}</td>
+                        <td style="color: ${server.ping < 50 ? '#00ff88' : '#ffaa00'}">${server.status === 'online' ? server.ping + 'ms' : '-'}</td>
+                    </tr>
+                `;
+                tableBody.innerHTML += row;
+            });
+        }
+
+        // آپدیت کردن رندوم دیتا
+        function updateServerData() {
+            serversData.forEach(server => {
+                // 5% شانس تغییر وضعیت
+                if (Math.random() > 0.98) {
+                    const states = ['online', 'online', 'online', 'maintenance', 'offline'];
+                    server.status = states[Math.floor(Math.random() * states.length)];
+                }
+
+                // تغییر جزئی پینگ و پلیر
+                if (server.status === 'online') {
+                    const pingChange = Math.floor(Math.random() * 10) - 5;
+                    server.ping = Math.max(10, Math.min(150, server.ping + pingChange));
+
+                    const playerChange = Math.floor(Math.random() * 10) - 5;
+                    server.players = Math.max(0, Math.min(500, server.players + playerChange));
+                }
+            });
+            renderTable();
+        }
+
+        // شروع مانیتورینگ
+        initServers();
+        setInterval(updateServerData, 3000); // آپدیت هر 3 ثانیه
+
+        // --- 3. انیمیشن پارتیکل ساده (Simple Particle System) ---
+        const canvas = document.getElementById('particles-js');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        let particlesArray;
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.directionX = (Math.random() * 0.4) - 0.2;
+                this.directionY = (Math.random() * 0.4) - 0.2;
+                this.size = Math.random() * 2;
+                this.color = '#ff3e3e';
+            }
+            update() {
+                if (this.x > canvas.width || this.x < 0) this.directionX = -this.directionX;
+                if (this.y > canvas.height || this.y < 0) this.directionY = -this.directionY;
+                this.x += this.directionX;
+                this.y += this.directionY;
+            }
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+            }
+        }
+
+        function initParticles() {
+            particlesArray = [];
+            let numberOfParticles = (canvas.height * canvas.width) / 15000;
+            for (let i = 0; i < numberOfParticles; i++) {
+                particlesArray.push(new Particle());
+            }
+        }
+
+        function animateParticles() {
+            requestAnimationFrame(animateParticles);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < particlesArray.length; i++) {
+                particlesArray[i].update();
+                particlesArray[i].draw();
+            }
+        }
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            initParticles();
+        });
+
+        initParticles();
+        animateParticles();
+
+    </script>
+</body>
+</html>
