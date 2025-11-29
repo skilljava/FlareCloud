@@ -136,6 +136,14 @@
             transition: 0.3s;
         }
         .nav-links a:hover::after { width: 100%; }
+        
+        /* --- افزودن استایل برای تگ <a> در auth-btns و hero-btns --- */
+        .auth-btns a,
+        .hero-btns a {
+            text-decoration: none;
+            display: inline-block; /* برای اینکه padding و margin به درستی کار کنند */
+        }
+        /* --- پایان افزودنی --- */
 
         .auth-btns .btn {
             padding: 10px 25px;
@@ -345,8 +353,8 @@
             </nav>
 
             <div class="auth-btns">
-                <button class="btn btn-login">ورود</button>
-                <button class="btn btn-register">ثبت نام</button>
+                <a href="auth.html" class="btn btn-login">ورود</a>
+                <a href="register.html" class="btn btn-register">ثبت نام</a>
             </div>
         </div>
     </header>
@@ -356,8 +364,8 @@
             <h1>بهترینا رو توی<br><span style="color: var(--primary);">Flare Cloud</span> تجربه کن</h1>
             <p>ارائه دهنده قدرتمندترین سرورهای گیمینگ، VPS و هاست ابری با پینگ پایین و آنتی‌دیداس سخت‌افزاری در دیتاسنترهای OVH.</p>
             <div class="hero-btns">
-                <button class="btn btn-register btn-hero">شروع کنید</button>
-                <button class="btn btn-login btn-hero">مشاهده پلن‌ها</button>
+                <a href="register.html" class="btn btn-register btn-hero">شروع کنید</a>
+                <a href="#services" class="btn btn-login btn-hero">مشاهده پلن‌ها</a>
             </div>
         </div>
     </section>
